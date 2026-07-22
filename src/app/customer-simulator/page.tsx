@@ -1,8 +1,8 @@
-import ScenarioCard from "@/components/scenario-engine/scenario-card";
+import ScenarioSession from "@/components/scenario-engine/scenario-session";
 import { getScenariosByType } from "@/lib/scenarios";
 
 export default function CustomerSimulatorPage() {
-  const [scenario] = getScenariosByType("menu_question");
+  const scenarios = getScenariosByType("menu_question");
 
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-6 py-16">
@@ -14,11 +14,7 @@ export default function CustomerSimulatorPage() {
           A guest asks a menu question — pick the correct answer.
         </p>
       </div>
-      {scenario ? (
-        <ScenarioCard scenario={scenario} />
-      ) : (
-        <p className="text-zinc-500">No scenarios available yet.</p>
-      )}
+      <ScenarioSession scenarios={scenarios} />
     </main>
   );
 }

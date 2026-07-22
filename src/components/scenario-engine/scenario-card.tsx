@@ -1,12 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import type { Scenario } from "@/types/scenario";
+import type { Scenario, ScenarioChoice } from "@/types/scenario";
 
-export default function ScenarioCard({ scenario }: { scenario: Scenario }) {
+export default function ScenarioCard({
+  scenario,
+  onAnswer,
+}: {
+  scenario: Scenario;
+  onAnswer?: (choice: ScenarioChoice) => void;
+}) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const selectedChoice =
     selectedIndex !== null ? scenario.choices[selectedIndex] : null;
+
+  function handleSelect(index: number) {
+    setSelectedIndex(index);
+    onAnswer?.(scenario.choices[index]);
+  }
 
   return (
     <div className="flex flex-col gap-4 rounded-lg border border-zinc-200 p-6 dark:border-zinc-800">
@@ -37,7 +48,7 @@ export default function ScenarioCard({ scenario }: { scenario: Scenario }) {
               key={`${scenario.id}-${index}`}
               type="button"
               disabled={selectedIndex !== null}
-              onClick={() => setSelectedIndex(index)}
+              onClick={() => handleSelect(index)}
               className={choiceClassName}
             >
               {choice.text}
