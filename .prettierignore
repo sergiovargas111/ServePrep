@@ -1,0 +1,7 @@
+.next
+node_modules
+src/generated
+prisma/migrations
+.claude/skills
+.windsurf/skills
+.agents/skills
