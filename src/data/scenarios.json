@@ -1,0 +1,84 @@
+[
+  {
+    "id": "scn_001",
+    "type": "menu_question",
+    "prompt": "A guest asks: 'Does the Caesar salad have anchovies?'",
+    "choices": [
+      {
+        "text": "Yes, in the dressing",
+        "correct": true,
+        "feedback": "Correct — classic Caesar dressing is anchovy-based."
+      },
+      {
+        "text": "No, it's vegetarian",
+        "correct": false,
+        "feedback": "Incorrect — could cause an allergy issue."
+      }
+    ],
+    "tags": ["menu", "allergen"]
+  },
+  {
+    "id": "scn_002",
+    "type": "difficult_customer",
+    "prompt": "Guest's steak came out well-done instead of medium-rare, visibly annoyed.",
+    "choices": [
+      {
+        "text": "Apologize, remake immediately, check in after",
+        "correct": true,
+        "feedback": "Best response — acknowledges mistake and fixes it fast."
+      },
+      {
+        "text": "Blame the kitchen",
+        "correct": false,
+        "feedback": "Avoid blaming the kitchen to the guest — just fix it."
+      },
+      {
+        "text": "Ignore it",
+        "correct": false,
+        "feedback": "Risks escalation and a bad review."
+      }
+    ],
+    "tags": ["customer_service", "conflict"]
+  },
+  {
+    "id": "scn_003",
+    "type": "menu_question",
+    "prompt": "A guest asks: 'Is the mushroom risotto gluten-free?'",
+    "choices": [
+      {
+        "text": "Yes, it's rice-based with no gluten ingredients",
+        "correct": true,
+        "feedback": "Correct — arborio rice, stock, and parmesan are all gluten-free."
+      },
+      {
+        "text": "No, it's made with barley",
+        "correct": false,
+        "feedback": "Incorrect — risotto is made with rice, not barley."
+      }
+    ],
+    "tags": ["menu", "allergen"]
+  },
+  {
+    "id": "scn_004",
+    "type": "difficult_customer",
+    "prompt": "A guest says their table has been waiting 20 minutes with no drink order taken.",
+    "choices": [
+      {
+        "text": "Apologize sincerely, take the order now, and offer to comp an item",
+        "correct": true,
+        "feedback": "Best response — owns the delay and offers a real gesture of goodwill."
+      },
+      {
+        "text": "Explain that the restaurant is short-staffed today",
+        "correct": false,
+        "feedback": "The guest doesn't need an excuse — they need to feel prioritized now."
+      },
+      {
+        "text": "Tell them another server was assigned to their table",
+        "correct": false,
+        "feedback": "Passing blame internally doesn't help the guest feel cared for."
+      }
+    ],
+    "tags": ["customer_service", "conflict"]
+  }
+]
