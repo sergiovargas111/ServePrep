@@ -1,18 +1,12 @@
 import "server-only";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
+import { menuDishSchema, type MenuDish } from "@/types/menu";
+
+export type { MenuDish };
 
 const PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions";
 const CACHE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
-
-const menuDishSchema = z.object({
-  name: z.string(),
-  ingredients: z.array(z.string()),
-  allergens: z.array(z.string()),
-  price: z.string(),
-});
-
-export type MenuDish = z.infer<typeof menuDishSchema>;
 
 const menuResponseSchema = z.object({
   dishes: z.array(menuDishSchema),

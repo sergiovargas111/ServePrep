@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import FlashcardSession from "@/components/quiz-engine/flashcard-session";
+import MenuQuizClient from "@/components/quiz-engine/menu-quiz-client";
 import { flashcards } from "@/lib/flashcards";
 import { getFlashcardSchedules } from "@/lib/flashcard-reviews";
 
@@ -18,8 +18,8 @@ export default async function MenuQuizPage() {
           spaced repetition.
         </p>
       </div>
-      <FlashcardSession
-        cards={flashcards}
+      <MenuQuizClient
+        staticCards={flashcards}
         initialSchedules={initialSchedules}
         isSignedIn={!!session?.user}
       />
