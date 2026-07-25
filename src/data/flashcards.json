@@ -1,0 +1,62 @@
+[
+  {
+    "id": "fc_001",
+    "category": "menu_term",
+    "term": "What does 'mise en place' mean?",
+    "answer": "Everything in its place — all ingredients and tools prepped before service."
+  },
+  {
+    "id": "fc_002",
+    "category": "menu_term",
+    "term": "What does 'al dente' mean?",
+    "answer": "Cooked firm to the bite, not soft — typically describes pasta."
+  },
+  {
+    "id": "fc_003",
+    "category": "allergen",
+    "term": "Name the 'Big 9' food allergens.",
+    "answer": "Milk, eggs, fish, shellfish, tree nuts, peanuts, wheat, soybeans, and sesame."
+  },
+  {
+    "id": "fc_004",
+    "category": "allergen",
+    "term": "What allergen is classic Caesar dressing built on?",
+    "answer": "Anchovies (fish)."
+  },
+  {
+    "id": "fc_005",
+    "category": "allergen",
+    "term": "What allergen is usually hiding in soy sauce?",
+    "answer": "Wheat — most soy sauce isn't gluten-free unless labeled tamari or GF."
+  },
+  {
+    "id": "fc_006",
+    "category": "wine_pairing",
+    "term": "What wine style pairs classically with oysters?",
+    "answer": "A crisp, high-acid white like Muscadet or Chablis."
+  },
+  {
+    "id": "fc_007",
+    "category": "wine_pairing",
+    "term": "What's a safe red wine pairing for a rich steak?",
+    "answer": "A bold red like Cabernet Sauvignon or Malbec."
+  },
+  {
+    "id": "fc_008",
+    "category": "wine_pairing",
+    "term": "Why does Champagne pair well with fried food?",
+    "answer": "Its high acidity and bubbles cut through the richness and grease."
+  },
+  {
+    "id": "fc_009",
+    "category": "cooking_temp",
+    "term": "What's the safe minimum internal temp for poultry?",
+    "answer": "165°F (74°C)."
+  },
+  {
+    "id": "fc_010",
+    "category": "cooking_temp",
+    "term": "What internal temp range is 'medium-rare' for beef?",
+    "answer": "130–135°F (54–57°C)."
+  }
+]
