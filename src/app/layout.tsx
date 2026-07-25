@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { auth } from "@/auth";
 import Nav from "@/components/nav";
 import "./globals.css";
 
@@ -18,18 +19,22 @@ export const metadata: Metadata = {
   description: "Server & food runner training platform",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // A stale or corrupted session cookie (e.g. signed with a rotated
+  // AUTH_SECRET) should mean "signed out", not crash the whole app.
+  const session = await auth().catch(() => null);
+
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <Nav />
+        <Nav session={session} />
         {children}
       </body>
     </html>

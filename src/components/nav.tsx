@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { Session } from "next-auth";
+import { signOutAction } from "@/lib/actions/auth-actions";
 
 const links = [
   { href: "/menu-quiz", label: "Menu Quiz" },
@@ -11,7 +13,7 @@ const links = [
   { href: "/dashboard", label: "Dashboard" },
 ];
 
-export default function Nav() {
+export default function Nav({ session }: { session: Session | null }) {
   const pathname = usePathname();
 
   return (
@@ -42,6 +44,35 @@ export default function Nav() {
             );
           })}
         </ul>
+        <div className="ml-auto flex items-center gap-3 text-sm whitespace-nowrap">
+          {session?.user ? (
+            <>
+              <span className="text-zinc-500 dark:text-zinc-400">
+                {session.user.email}
+              </span>
+              <form action={signOutAction}>
+                <button
+                  type="submit"
+                  className="text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-zinc-50"
+                >
+                  Sign out
+                </button>
+              </form>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/sign-in"
+                className="text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-zinc-50"
+              >
+                Sign in
+              </Link>
+              <Link href="/sign-up" className="font-medium">
+                Sign up
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );
