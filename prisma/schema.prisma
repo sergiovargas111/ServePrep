@@ -51,3 +51,17 @@ model FlashcardReview {
   @@unique([userId, cardId])
   @@index([userId])
 }
+
+// Caches Perplexity menu lookups so the same restaurant/location isn't
+// re-queried on every request. restaurantName/location are stored
+// normalized (trimmed + lowercased) by the caching layer, so the unique
+// constraint actually catches equivalent-but-differently-cased lookups.
+model MenuCache {
+  id             String   @id @default(cuid())
+  restaurantName String
+  location       String
+  dishes         Json
+  fetchedAt      DateTime @default(now())
+
+  @@unique([restaurantName, location])
+}

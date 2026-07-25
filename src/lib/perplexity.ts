@@ -1,7 +1,9 @@
 import "server-only";
 import { z } from "zod";
+import prisma from "@/lib/prisma";
 
 const PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions";
+const CACHE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 const menuDishSchema = z.object({
   name: z.string(),
@@ -15,6 +17,8 @@ export type MenuDish = z.infer<typeof menuDishSchema>;
 const menuResponseSchema = z.object({
   dishes: z.array(menuDishSchema),
 });
+
+const dishesArraySchema = z.array(menuDishSchema);
 
 // Mirrors menuResponseSchema above — kept as a plain object since it's sent
 // as a JSON Schema payload to Perplexity, not used for local validation.
@@ -42,7 +46,19 @@ const MENU_JSON_SCHEMA = {
 
 export class PerplexityMenuError extends Error {}
 
-export async function fetchRestaurantMenu(
+export interface MenuLookupResult {
+  dishes: MenuDish[];
+  cached: boolean;
+  fetchedAt: Date;
+}
+
+// Cache keys are normalized so "Chipotle" / " chipotle " / "CHIPOTLE" all
+// hit the same row instead of creating near-duplicate cache entries.
+function normalizeCacheKey(value: string): string {
+  return value.trim().toLowerCase();
+}
+
+async function fetchRestaurantMenuFromPerplexity(
   restaurantName: string,
   location: string,
 ): Promise<MenuDish[]> {
@@ -110,4 +126,47 @@ export async function fetchRestaurantMenu(
   }
 
   return parsed.data.dishes;
+}
+
+export async function fetchRestaurantMenu(
+  restaurantName: string,
+  location: string,
+): Promise<MenuLookupResult> {
+  const cacheKey = {
+    restaurantName: normalizeCacheKey(restaurantName),
+    location: normalizeCacheKey(location),
+  };
+
+  const cached = await prisma.menuCache.findUnique({
+    where: { restaurantName_location: cacheKey },
+  });
+
+  if (cached) {
+    const age = Date.now() - cached.fetchedAt.getTime();
+    if (age < CACHE_MAX_AGE_MS) {
+      const parsedCache = dishesArraySchema.safeParse(cached.dishes);
+      if (parsedCache.success) {
+        return {
+          dishes: parsedCache.data,
+          cached: true,
+          fetchedAt: cached.fetchedAt,
+        };
+      }
+      // Cached JSON doesn't match the current schema (e.g. it predates a
+      // shape change) — fall through and refetch instead of returning it.
+    }
+  }
+
+  const dishes = await fetchRestaurantMenuFromPerplexity(
+    restaurantName,
+    location,
+  );
+
+  const saved = await prisma.menuCache.upsert({
+    where: { restaurantName_location: cacheKey },
+    create: { ...cacheKey, dishes },
+    update: { dishes, fetchedAt: new Date() },
+  });
+
+  return { dishes, cached: false, fetchedAt: saved.fetchedAt };
 }

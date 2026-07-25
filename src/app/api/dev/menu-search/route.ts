@@ -16,8 +16,14 @@ export async function GET(request: Request) {
   }
 
   try {
-    const dishes = await fetchRestaurantMenu(restaurant, location);
-    return NextResponse.json({ restaurant, location, dishes });
+    const result = await fetchRestaurantMenu(restaurant, location);
+    return NextResponse.json({
+      restaurant,
+      location,
+      cached: result.cached,
+      fetchedAt: result.fetchedAt,
+      dishes: result.dishes,
+    });
   } catch (error) {
     if (error instanceof PerplexityMenuError) {
       return NextResponse.json({ error: error.message }, { status: 502 });
