@@ -9,6 +9,7 @@ import {
   type CardSchedule,
   type ReviewRating,
 } from "@/lib/spaced-repetition";
+import { recordFlashcardReview } from "@/lib/actions/flashcard-actions";
 
 const RATING_OPTIONS: {
   rating: ReviewRating;
@@ -36,7 +37,15 @@ const CATEGORY_LABELS: Record<FlashcardCategory, string> = {
   cooking_temp: "Cooking Temp",
 };
 
-export default function FlashcardSession({ cards }: { cards: Flashcard[] }) {
+export default function FlashcardSession({
+  cards,
+  initialSchedules,
+  isSignedIn = false,
+}: {
+  cards: Flashcard[];
+  initialSchedules?: Record<string, CardSchedule>;
+  isSignedIn?: boolean;
+}) {
   // Fixed for the lifetime of the session so "due" checks stay consistent
   // between renders instead of drifting against the wall clock.
   const [sessionStart] = useState(() => new Date());
@@ -44,7 +53,8 @@ export default function FlashcardSession({ cards }: { cards: Flashcard[] }) {
     () => {
       const initial: Record<string, CardSchedule> = {};
       for (const card of cards) {
-        initial[card.id] = createInitialSchedule(sessionStart);
+        initial[card.id] =
+          initialSchedules?.[card.id] ?? createInitialSchedule(sessionStart);
       }
       return initial;
     },
@@ -61,11 +71,25 @@ export default function FlashcardSession({ cards }: { cards: Flashcard[] }) {
 
   function handleRate(rating: ReviewRating) {
     if (!currentCard) return;
+    const nextSchedule = reviewCard(
+      schedules[currentCard.id],
+      rating,
+      sessionStart,
+    );
     setSchedules((prev) => ({
       ...prev,
-      [currentCard.id]: reviewCard(prev[currentCard.id], rating, sessionStart),
+      [currentCard.id]: nextSchedule,
     }));
     setRevealed(false);
+
+    if (isSignedIn) {
+      // Best-effort persistence — a failed write shouldn't disrupt the
+      // in-memory session the user is actively working through.
+      recordFlashcardReview({
+        cardId: currentCard.id,
+        ...nextSchedule,
+      }).catch(() => {});
+    }
   }
 
   return (
