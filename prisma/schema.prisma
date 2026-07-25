@@ -18,4 +18,36 @@ model User {
   email          String   @unique
   hashedPassword String
   createdAt      DateTime @default(now())
+
+  scenarioResults  ScenarioResult[]
+  flashcardReviews FlashcardReview[]
+}
+
+model ScenarioResult {
+  id         String   @id @default(cuid())
+  userId     String
+  scenarioId String
+  correct    Boolean
+  timestamp  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// Mirrors the CardSchedule shape in src/lib/spaced-repetition.ts — one row
+// per (user, card) pair holding that card's current SM-2 schedule.
+model FlashcardReview {
+  id           String   @id @default(cuid())
+  userId       String
+  cardId       String
+  easeFactor   Float
+  intervalDays Int
+  repetitions  Int
+  dueDate      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, cardId])
+  @@index([userId])
 }
