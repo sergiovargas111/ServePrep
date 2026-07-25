@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import ScenarioCard from "@/components/scenario-engine/scenario-card";
+import { recordScenarioResult } from "@/lib/actions/scenario-actions";
 import type { Scenario, ScenarioChoice } from "@/types/scenario";
 
 export default function ScenarioSession({
   scenarios,
+  isSignedIn = false,
 }: {
   scenarios: Scenario[];
+  isSignedIn?: boolean;
 }) {
   const [index, setIndex] = useState(0);
   const [answered, setAnswered] = useState(false);
@@ -26,6 +29,15 @@ export default function ScenarioSession({
       total: prev.total + 1,
     }));
     setAnswered(true);
+
+    if (isSignedIn) {
+      // Best-effort persistence — a failed write shouldn't disrupt the
+      // in-memory session the user is actively working through.
+      recordScenarioResult({
+        scenarioId: currentScenario.id,
+        correct: choice.correct,
+      }).catch(() => {});
+    }
   }
 
   function handleNext() {

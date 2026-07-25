@@ -1,7 +1,9 @@
+import { auth } from "@/auth";
 import ScenarioSession from "@/components/scenario-engine/scenario-session";
 import { getScenariosByType } from "@/lib/scenarios";
 
-export default function CustomerSimulatorPage() {
+export default async function CustomerSimulatorPage() {
+  const session = await auth().catch(() => null);
   const scenarios = getScenariosByType("menu_question");
 
   return (
@@ -14,7 +16,7 @@ export default function CustomerSimulatorPage() {
           A guest asks a menu question — pick the correct answer.
         </p>
       </div>
-      <ScenarioSession scenarios={scenarios} />
+      <ScenarioSession scenarios={scenarios} isSignedIn={!!session?.user} />
     </main>
   );
 }
